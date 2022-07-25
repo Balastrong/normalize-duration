@@ -1,34 +1,5 @@
-export type Duration = {
-  years?: number;
-  months?: number;
-  days?: number;
-  hours?: number;
-  minutes?: number;
-  seconds?: number;
-  milliseconds?: number;
-};
-
-type Concrete<Type> = {
-  [Property in keyof Type]-?: Type[Property];
-};
-
-const factors: Concrete<Omit<Duration, "years">> = {
-  months: 12,
-  days: 30,
-  hours: 24,
-  minutes: 60,
-  seconds: 60,
-  milliseconds: 1000,
-};
-
-const order: Array<keyof typeof factors> = [
-  "months",
-  "days",
-  "hours",
-  "minutes",
-  "seconds",
-  "milliseconds",
-];
+import { factors, order } from "./constants";
+import { Duration } from "./types";
 
 export const normalizeDuration = (duration: Duration): Duration => {
   const { normalizedDuration, rest } = order.reduceRight(
