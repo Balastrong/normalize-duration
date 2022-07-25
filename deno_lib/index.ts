@@ -1,0 +1,62 @@
+import { factors, sortedKeys } from "./constants.ts";
+import { Duration, Options } from "./types.ts";
+
+/**
+ * @name normalizeDuration
+ * @summary Normalizes a duration
+ *
+ * @param {Duration} duration Duration to normalize
+ * @param {Options} options Options to customize the normalization process
+ *
+ * @returns the normalized object
+ *
+ * @example
+ * normalizeDuration({ milliseconds: 5020 }); // { seconds: 5, milliseconds: 20 }
+ */
+export const normalizeDuration = (
+  duration: Duration,
+  options?: Options
+): Duration => {
+  const lastKey = [...sortedKeys]
+    .reverse()
+    .find((key) => options?.customUnits?.includes(key));
+
+  const { normalizedDuration: finalDuration } = sortedKeys.reduce(
+    ({ normalizedDuration, rest }, key) => {
+      const aggregatedValue = (duration[key] || 0) + rest; // Raw value + rest
+      const currentFactor =
+        key === lastKey ? Number.MAX_SAFE_INTEGER : factors[key]; // How many X in Y
+      const currentValue = aggregatedValue % currentFactor; // Effective value
+      const newRest = Math.floor(aggregatedValue / currentFactor); // Rest to be added to the next unit
+
+      if (
+        options?.customUnits?.includes(key) ||
+        (!options?.customUnits && aggregatedValue > 0)
+      ) {
+        return {
+          normalizedDuration: {
+            ...normalizedDuration,
+            [key]: currentValue,
+          },
+          rest: newRest,
+        };
+      } else {
+        return {
+          normalizedDuration,
+          rest: newRest,
+        };
+      }
+    },
+    { normalizedDuration: {} as Duration, rest: 0 }
+  );
+
+  if (options?.stripZeroes) {
+    (Object.keys(finalDuration) as (keyof Duration)[]).forEach((key) => {
+      if (finalDuration[key] === 0) {
+        delete finalDuration[key];
+      }
+    });
+  }
+
+  return finalDuration;
+};
