@@ -1,6 +1,6 @@
 {
   "name": "normalize-duration",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Normalizing a duration in different time units",
   "main": "index.js",
   "types": "lib/index.d.ts",
