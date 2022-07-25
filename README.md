@@ -63,10 +63,10 @@ You can get extra customization with some optional parameters:
 
 ```ts
 export type Options = {
-  customUnits?: Array<keyof Duration>;
+  customUnits?: (keyof Duration)[];
   stripZeroes?: boolean;
 };
 ```
 
-    - `customUnits`: An array of custom units to use.
-    - `stripZeroes`: If true, will strip zeroes from the output.
+- `customUnits`: Only the units defined here will be used.
+- `stripZeroes`: If true, will strip zeroes from the output.

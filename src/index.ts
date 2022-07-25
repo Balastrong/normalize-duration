@@ -21,7 +21,7 @@ export const normalizeDuration = (
     .reverse()
     .find((key) => options?.customUnits?.includes(key));
 
-  const { normalizedDuration } = sortedKeys.reduce(
+  const { normalizedDuration: finalDuration } = sortedKeys.reduce(
     ({ normalizedDuration, rest }, key) => {
       const aggregatedValue = (duration[key] || 0) + rest; // Raw value + rest
       const currentFactor =
@@ -51,14 +51,12 @@ export const normalizeDuration = (
   );
 
   if (options?.stripZeroes) {
-    (Object.keys(normalizedDuration) as Array<keyof Duration>).forEach(
-      (key) => {
-        if (normalizedDuration[key] === 0) {
-          delete normalizedDuration[key];
-        }
+    (Object.keys(finalDuration) as (keyof Duration)[]).forEach((key) => {
+      if (finalDuration[key] === 0) {
+        delete finalDuration[key];
       }
-    );
+    });
   }
 
-  return normalizedDuration;
+  return finalDuration;
 };

@@ -10,7 +10,7 @@ export const factors: Concrete<Duration> = {
   milliseconds: 1000,
 };
 
-export const sortedKeys: Array<keyof typeof factors> = [
+export const sortedKeys: (keyof typeof factors)[] = [
   "milliseconds",
   "seconds",
   "minutes",

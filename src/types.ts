@@ -16,11 +16,11 @@ export type Duration = {
  * @name Options
  * @summary Custom options.
  *
- * @property {Array<string>} customUnits - Only the selected units will be used.
+ * @property {(keyof Duration)[]} customUnits - Only the selected units will be used.
  * @property {boolean} stripZeroes - Whether to strip zeroes in between.
  */
 export type Options = {
-  customUnits?: Array<keyof Duration>;
+  customUnits?: (keyof Duration)[];
   stripZeroes?: boolean;
 };
 
