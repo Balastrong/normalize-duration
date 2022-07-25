@@ -32,7 +32,11 @@ yarn add normalize-duration
 
 ### Deno
 
-Coming soon on [deno.land/x](https://deno.land/x)!
+If you use Deno, you can just import the package from [deno.land/x](https://deno.land/x/normalize_duration)
+
+```ts
+import { normalizeDuration } from "https://deno.land/x/normalize_duration/mod.ts";
+```
 
 ## Usage
 
