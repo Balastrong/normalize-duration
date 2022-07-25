@@ -1,36 +1,40 @@
-import { factors, order } from "./constants";
-import { Duration } from "./types";
+import { factors, sortedKeys } from "./constants";
+import { Duration, Options } from "./types";
 
-export const normalizeDuration = (duration: Duration): Duration => {
-  const { normalizedDuration, rest } = order.reduceRight(
+export const normalizeDuration = (
+  duration: Duration,
+  options?: Options
+): Duration => {
+  const isKeyValid = (key: keyof Duration) =>
+    !options?.customUnits || options?.customUnits?.includes(key);
+
+  const { normalizedDuration } = sortedKeys.reduce(
     ({ normalizedDuration, rest }, key) => {
-      const currentUnit = (duration[key] || 0) + rest;
-      const currentFactor = factors[key];
+      const aggregatedValue = (duration[key] || 0) + rest; // Raw value + rest
+      const currentFactor = factors[key]; // How many X in Y
+      const currentValue = aggregatedValue % currentFactor; // Effective value
+      const newRest = Math.floor(aggregatedValue / currentFactor); // Rest to be added to the next unit
 
-      if (currentUnit > 0) {
+      if (
+        (options?.stripZeroes ? currentValue > 0 : aggregatedValue > 0) &&
+        isKeyValid(key)
+      ) {
         return {
           normalizedDuration: {
             ...normalizedDuration,
-            [key]: currentUnit % currentFactor,
+            [key]: currentValue,
           },
-          rest: Math.floor(currentUnit / currentFactor),
+          rest: newRest,
         };
       } else {
         return {
           normalizedDuration,
-          rest: Math.floor(currentUnit / currentFactor),
+          rest: newRest,
         };
       }
     },
     { normalizedDuration: {}, rest: 0 }
   );
-
-  if (rest > 0) {
-    return {
-      ...normalizedDuration,
-      years: rest,
-    };
-  }
 
   return normalizedDuration;
 };

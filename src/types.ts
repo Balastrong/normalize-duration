@@ -11,3 +11,8 @@ export type Duration = {
 export type Concrete<Type> = {
   [Property in keyof Type]-?: Type[Property];
 };
+
+export type Options = {
+  customUnits?: Array<keyof Duration>;
+  stripZeroes?: boolean;
+};

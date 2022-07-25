@@ -1,6 +1,7 @@
 import { Concrete, Duration } from "./types";
 
-export const factors: Concrete<Omit<Duration, "years">> = {
+export const factors: Concrete<Duration> = {
+  years: Number.MAX_SAFE_INTEGER,
   months: 12,
   days: 30,
   hours: 24,
@@ -9,11 +10,12 @@ export const factors: Concrete<Omit<Duration, "years">> = {
   milliseconds: 1000,
 };
 
-export const order: Array<keyof typeof factors> = [
-  "months",
-  "days",
-  "hours",
-  "minutes",
-  "seconds",
+export const sortedKeys: Array<keyof typeof factors> = [
   "milliseconds",
+  "seconds",
+  "minutes",
+  "hours",
+  "days",
+  "months",
+  "years",
 ];

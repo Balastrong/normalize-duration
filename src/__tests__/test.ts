@@ -1,4 +1,4 @@
-import { normalizeDuration } from "../";
+import { normalizeDuration } from "..";
 
 describe("normalize-duration", () => {
   it("converts milliseconds", () => {
@@ -20,7 +20,7 @@ describe("normalize-duration", () => {
       minutes: 2,
     });
 
-    // Jumps on three units + skip one
+    // Jumps on three units + skip one (no stripZeroes)
     const millisInDay = 24 * 60 * 60 * 1000;
     expect(
       normalizeDuration({ milliseconds: 121005 + millisInDay * 3 })
@@ -31,6 +31,20 @@ describe("normalize-duration", () => {
       hours: 0,
       days: 3,
     });
+  });
+
+  // Jumps on three units + skip one (stripZeroes)
+  const millisInDay = 24 * 60 * 60 * 1000;
+  expect(
+    normalizeDuration(
+      { milliseconds: 121005 + millisInDay * 3 },
+      { stripZeroes: true }
+    )
+  ).toEqual({
+    milliseconds: 5,
+    seconds: 1,
+    minutes: 2,
+    days: 3,
   });
 
   it("converts seconds skipping milliseconds", () => {
@@ -50,6 +64,50 @@ describe("normalize-duration", () => {
     expect(normalizeDuration({ months: 25 })).toEqual({
       months: 1,
       years: 2,
+    });
+  });
+
+  describe("with custom units", () => {
+    it("converts milliseconds", () => {
+      expect(
+        normalizeDuration(
+          { milliseconds: 10 },
+          { customUnits: ["milliseconds"] }
+        )
+      ).toEqual({
+        milliseconds: 10,
+      });
+    });
+
+    it("converts seconds", () => {
+      expect(
+        normalizeDuration({ seconds: 10 }, { customUnits: ["seconds"] })
+      ).toEqual({
+        seconds: 10,
+      });
+    });
+
+    it("converts milliseconds in minutes", () => {
+      expect(
+        normalizeDuration(
+          { milliseconds: 1000 * 60 * 3 },
+          { customUnits: ["minutes"] }
+        )
+      ).toEqual({
+        minutes: 3,
+      });
+    });
+
+    it("converts milliseconds in seconds and minutes", () => {
+      expect(
+        normalizeDuration(
+          { milliseconds: 1000 * 60 * 3 + 5000 },
+          { customUnits: ["minutes", "seconds"] }
+        )
+      ).toEqual({
+        seconds: 5,
+        minutes: 3,
+      });
     });
   });
 });
