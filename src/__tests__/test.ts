@@ -138,5 +138,35 @@ describe("normalize-duration", () => {
         )
       ).toEqual({});
     });
+
+    it("sums up everything in the last unit", () => {
+      expect(
+        normalizeDuration({ seconds: 3665 }, { customUnits: ["minutes"] })
+      ).toEqual({
+        minutes: 61,
+      });
+    });
+
+    expect(
+      normalizeDuration(
+        { seconds: 3665 },
+        { customUnits: ["minutes", "seconds"] }
+      )
+    ).toEqual({
+      minutes: 61,
+      seconds: 5,
+    });
+
+    expect(
+      normalizeDuration({ seconds: 3665 }, { customUnits: ["hours"] })
+    ).toEqual({
+      hours: 1,
+    });
+
+    expect(normalizeDuration({ seconds: 3665 })).toEqual({
+      hours: 1,
+      minutes: 1,
+      seconds: 5,
+    });
   });
 });

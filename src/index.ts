@@ -1,14 +1,31 @@
 import { factors, sortedKeys } from "./constants";
 import { Duration, Options } from "./types";
 
+/**
+ * @name normalizeDuration
+ * @summary Normalizes a duration
+ *
+ * @param {Duration} duration Duration to normalize
+ * @param {Options} options Options to customize the normalization process
+ *
+ * @returns the normalized object
+ *
+ * @example
+ * normalizeDuration({ milliseconds: 5020 }); // { seconds: 5, milliseconds: 20 }
+ */
 export const normalizeDuration = (
   duration: Duration,
   options?: Options
 ): Duration => {
+  const lastKey = [...sortedKeys]
+    .reverse()
+    .find((key) => options?.customUnits?.includes(key));
+
   const { normalizedDuration } = sortedKeys.reduce(
     ({ normalizedDuration, rest }, key) => {
       const aggregatedValue = (duration[key] || 0) + rest; // Raw value + rest
-      const currentFactor = factors[key]; // How many X in Y
+      const currentFactor =
+        key === lastKey ? Number.MAX_SAFE_INTEGER : factors[key]; // How many X in Y
       const currentValue = aggregatedValue % currentFactor; // Effective value
       const newRest = Math.floor(aggregatedValue / currentFactor); // Rest to be added to the next unit
 
