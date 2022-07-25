@@ -109,5 +109,34 @@ describe("normalize-duration", () => {
         minutes: 3,
       });
     });
+
+    it("converts milliseconds in seconds and minutes", () => {
+      expect(
+        normalizeDuration(
+          { milliseconds: 1000 * 60 * 3 },
+          { customUnits: ["minutes", "seconds"] }
+        )
+      ).toEqual({
+        seconds: 0,
+        minutes: 3,
+      });
+    });
+
+    it("converts milliseconds in seconds and minutes", () => {
+      expect(
+        normalizeDuration({ milliseconds: 1000 }, { customUnits: ["hours"] })
+      ).toEqual({
+        hours: 0,
+      });
+    });
+
+    it("converts milliseconds in seconds and minutes - strip zeroes", () => {
+      expect(
+        normalizeDuration(
+          { milliseconds: 1000 },
+          { customUnits: ["hours"], stripZeroes: true }
+        )
+      ).toEqual({});
+    });
   });
 });

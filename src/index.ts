@@ -5,9 +5,6 @@ export const normalizeDuration = (
   duration: Duration,
   options?: Options
 ): Duration => {
-  const isKeyValid = (key: keyof Duration) =>
-    !options?.customUnits || options?.customUnits?.includes(key);
-
   const { normalizedDuration } = sortedKeys.reduce(
     ({ normalizedDuration, rest }, key) => {
       const aggregatedValue = (duration[key] || 0) + rest; // Raw value + rest
@@ -16,8 +13,8 @@ export const normalizeDuration = (
       const newRest = Math.floor(aggregatedValue / currentFactor); // Rest to be added to the next unit
 
       if (
-        (options?.stripZeroes ? currentValue > 0 : aggregatedValue > 0) &&
-        isKeyValid(key)
+        options?.customUnits?.includes(key) ||
+        (!options?.customUnits && aggregatedValue > 0)
       ) {
         return {
           normalizedDuration: {
@@ -33,8 +30,18 @@ export const normalizeDuration = (
         };
       }
     },
-    { normalizedDuration: {}, rest: 0 }
+    { normalizedDuration: {} as Duration, rest: 0 }
   );
+
+  if (options?.stripZeroes) {
+    (Object.keys(normalizedDuration) as Array<keyof Duration>).forEach(
+      (key) => {
+        if (normalizedDuration[key] === 0) {
+          delete normalizedDuration[key];
+        }
+      }
+    );
+  }
 
   return normalizedDuration;
 };
